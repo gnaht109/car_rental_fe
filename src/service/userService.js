@@ -33,7 +33,7 @@ const userService = {
     return response.json();
   },
   create: async (user) => {
-    const response = await fetch(API_URL, {
+    const response = await fetch(`${API_URL}/signup`, {
       // <-- Gửi vào http://localhost:8080/api/users
       method: "POST",
       headers: getAuthHeader(),
@@ -66,7 +66,7 @@ const userService = {
     }
 
     return response.json().catch(() => ({}));
-  }
+  },
 };
 
 export default userService;

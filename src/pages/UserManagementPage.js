@@ -141,7 +141,7 @@ function UserManagementPage() {
                     <td>{user.username}</td>
                     <td>{user.email}</td>
                     <td>{user.phone || "-"}</td>
-                    <td>{user.role || "USER"}</td>
+                    <td>{user.roles || user.role || "USER"}</td>
                     <td>
                       <button
                         onClick={() => handleOpenForm(user)}
@@ -206,7 +206,7 @@ function UserForm({ user, onSubmit, onCancel }) {
     email: user?.email || "",
     phone: user?.phone || "",
     password: "",
-    role: user?.role || "USER",
+    roles: user?.roles || user?.role || "USER", // Hỗ trợ cả role và roles
   });
 
   const handleChange = (e) => {
@@ -222,6 +222,11 @@ function UserForm({ user, onSubmit, onCancel }) {
     const submitData = { ...formData };
     if (user && !submitData.password) {
       delete submitData.password;
+    }
+    // Đảm bảo gửi roles thay vì role
+    if (submitData.role) {
+      submitData.roles = submitData.role;
+      delete submitData.role;
     }
     onSubmit(submitData);
   };
@@ -275,11 +280,11 @@ function UserForm({ user, onSubmit, onCancel }) {
         />
       </div>
       <div className="form-group">
-        <label htmlFor="role">Role:</label>
+        <label htmlFor="roles">Role:</label>
         <select
-          id="role"
-          name="role"
-          value={formData.role}
+          id="roles"
+          name="roles"
+          value={formData.roles}
           onChange={handleChange}
           required
         >

@@ -8,20 +8,40 @@ function Header() {
   return (
     <header className="main-header">
       <div className="container">
-        <Link to="/" className="logo">M</Link>
+        <Link to="/" className="logo">
+          M
+        </Link>
         <nav className="main-nav">
           <ul>
-            <li><NavLink to="/">Home</NavLink></li>
-            <li><NavLink to="/cars">All Cars</NavLink></li>
-            <li><NavLink to="/about">About Us</NavLink></li>
-            <li><NavLink to="/contact">Contact</NavLink></li>
+            <li>
+              <NavLink to="/">Home</NavLink>
+            </li>
+            <li>
+              <NavLink to="/cars">All Cars</NavLink>
+            </li>
+            {user && (
+              <>
+                <li>
+                  <NavLink to="/post-car">Post Car</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/my-cars">My Cars</NavLink>
+                </li>
+              </>
+            )}
+            <li>
+              <NavLink to="/about">About Us</NavLink>
+            </li>
+            <li>
+              <NavLink to="/contact">Contact</NavLink>
+            </li>
           </ul>
         </nav>
         <div className="header-actions">
           {user ? (
             <>
               <span>Hello, {user.username}</span>
-              <button 
+              <button
                 onClick={() => {
                   logout();
                   navigate("/login");
@@ -33,8 +53,12 @@ function Header() {
             </>
           ) : (
             <>
-              <NavLink to="/login" className="btn btn-secondary">Log In</NavLink>
-              <NavLink to="/register" className="btn btn-primary">Sign Up</NavLink>
+              <NavLink to="/login" className="btn btn-secondary">
+                Log In
+              </NavLink>
+              <NavLink to="/register" className="btn btn-primary">
+                Sign Up
+              </NavLink>
             </>
           )}
         </div>

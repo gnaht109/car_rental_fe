@@ -11,10 +11,10 @@ function CarCard({ car }) {
 
   return (
     <div className="car-card">
-      <img src={car.image} alt={car.name} />
+      <img src={car.imgUrl} alt={car.brand + " " + car.model} />
       <div className="car-card-content">
-        <h3>{car.name}</h3>
-        <p className="price">From ${formatter.format(car.price)} / day</p>
+        <h3>{car.brand + " " + car.model}</h3>
+        <p className="price">From ${formatter.format(car.pricePerDay)} / day</p>
         {/* The link now points to the dynamic route for the specific car's ID */}
         <Link to={`/cars/${car.id}`} className="btn btn-primary">
           View Details
@@ -28,13 +28,12 @@ function CarCard({ car }) {
 CarCard.propTypes = {
   // We declare that 'car' is a prop...
   car: PropTypes.shape({
-    // ...and it must be an object with a specific "shape":
-    id: PropTypes.number.isRequired, // 'id' must be a number and is required.
-    name: PropTypes.string.isRequired, // 'name' must be a string and is required.
-    price: PropTypes.number.isRequired, // 'price' must be a number and is required.
-    image: PropTypes.string.isRequired, // 'image' must be a string and is required.
+    id: PropTypes.number.isRequired,
+    brand: PropTypes.string.isRequired, // Đổi name -> brand
+    model: PropTypes.string.isRequired, // Thêm model
+    pricePerDay: PropTypes.number.isRequired, // Đổi price -> pricePerDay
+    imgUrl: PropTypes.string.isRequired, // Đổi image -> imgUrl
   }).isRequired, // The entire 'car' object itself is also required.
 };
-// If any of these props are missing or of the wrong type, a warning will be shown in the console during development.
 
 export default CarCard;
