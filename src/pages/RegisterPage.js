@@ -53,7 +53,7 @@ function RegisterPage() {
       }
 
       alert(resultText); // Hiển thị "SIGNUP SUCCESS ..."
-      navigate("login"); // Chuyển hướng sang trang đăng nhập sau khi đăng ký thành công
+      navigate("/login"); // Chuyển hướng sang trang đăng nhập sau khi đăng ký thành công
     } catch (error) {
       console.error("Error:", error);
       alert(`Error: ${error.message}`);

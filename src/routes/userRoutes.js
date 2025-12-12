@@ -13,6 +13,8 @@ import CarsRentalPage from "../pages/rental/CarsRentalPage";
 import UserProtectedRoute from "../components/UserProtectedRoute";
 import { Route } from "react-router-dom";
 import RentalFillPage from "../pages/rental/RentalFillPage";
+import MyProfilePage from "../pages/MyProfilePage";
+import PaymentPage from "../pages/PaymentPage";
 
 function UserRoutes() {
   return (
@@ -49,6 +51,14 @@ function UserRoutes() {
         }
       />
       <Route
+        path="my-profile"
+        element={
+          <UserProtectedRoute>
+            <MyProfilePage />
+          </UserProtectedRoute>
+        }
+      />
+      <Route
         path="checkout/:id"
         element={
           <UserProtectedRoute>
@@ -56,7 +66,17 @@ function UserRoutes() {
           </UserProtectedRoute>
         }
       />
+      <Route 
+        path="/payment/:rentalId" 
+        element={
+          <UserProtectedRoute>
+            <PaymentPage />
+          </UserProtectedRoute>
+        } 
+      />
+
     </Route>
+
   );
 }
 
