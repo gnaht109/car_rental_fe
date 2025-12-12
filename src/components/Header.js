@@ -5,6 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 function Header() {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+
   return (
     <header className="main-header">
       <div className="container">
@@ -19,16 +20,7 @@ function Header() {
             <li>
               <NavLink to="/cars">All Cars</NavLink>
             </li>
-            {user && (
-              <>
-                <li>
-                  <NavLink to="/post-car">Post Car</NavLink>
-                </li>
-                <li>
-                  <NavLink to="/my-cars">My Cars</NavLink>
-                </li>
-              </>
-            )}
+            {/* Đã xóa Post Car và My Cars ở đây theo yêu cầu trước */}
             <li>
               <NavLink to="/about">About Us</NavLink>
             </li>
@@ -37,10 +29,25 @@ function Header() {
             </li>
           </ul>
         </nav>
+
         <div className="header-actions">
           {user ? (
-            <>
-              <span>Hello, {user.username}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+              {/* 1. Dòng chào user (Bên trái) */}
+              <span style={{ fontWeight: "bold", color: "#fff" }}>
+                Hello, {user.username}
+              </span>
+
+              {/* 2. Nút My Profile (Ở giữa) */}
+              <Link
+                to="/my-profile"
+                className="btn btn-primary" // Bạn có thể đổi thành btn-secondary nếu muốn màu khác
+                style={{ textDecoration: "none" }}
+              >
+                My Profile
+              </Link>
+
+              {/* 3. Nút Logout (Bên phải) */}
               <button
                 onClick={() => {
                   logout();
@@ -50,7 +57,7 @@ function Header() {
               >
                 Logout
               </button>
-            </>
+            </div>
           ) : (
             <>
               <NavLink to="/login" className="btn btn-secondary">

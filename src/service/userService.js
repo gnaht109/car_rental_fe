@@ -32,6 +32,17 @@ const userService = {
     }
     return response.json();
   },
+
+  getMyInfo: async () => {
+    const response = await fetch(`${API_URL}/me`, {
+      headers: getAuthHeader(),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch user info");
+    }
+    return response.json();
+  },
+
   create: async (user) => {
     const response = await fetch(`${API_URL}/signup`, {
       // <-- Gửi vào http://localhost:8080/api/users

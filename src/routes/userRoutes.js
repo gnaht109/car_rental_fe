@@ -13,6 +13,7 @@ import CarsRentalPage from "../pages/rental/CarsRentalPage";
 import UserProtectedRoute from "../components/UserProtectedRoute";
 import { Route } from "react-router-dom";
 import RentalFillPage from "../pages/rental/RentalFillPage";
+import MyProfilePage from "../pages/MyProfilePage";
 
 function UserRoutes() {
   return (
@@ -45,6 +46,14 @@ function UserRoutes() {
         element={
           <UserProtectedRoute>
             <CarsRentalPage />
+          </UserProtectedRoute>
+        }
+      />
+      <Route
+        path="my-profile"
+        element={
+          <UserProtectedRoute>
+            <MyProfilePage />
           </UserProtectedRoute>
         }
       />

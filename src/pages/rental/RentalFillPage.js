@@ -83,7 +83,7 @@ function RentalFillPage() {
       await rentalService.createRental(requestData);
 
       alert("Booking successful! Redirecting to your rentals...");
-      navigate("/my-rentals"); // Chuyển về trang lịch sử
+      navigate("/my-profile", { state: { activeTab: "my-rentals" } });
     } catch (err) {
       console.error("Booking Error:", err);
       // Hiển thị lỗi từ backend (ví dụ: Xe đã có người đặt)
