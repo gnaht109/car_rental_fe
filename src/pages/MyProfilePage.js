@@ -343,7 +343,6 @@ function MyProfilePage() {
                           <td>{rental.rentalId}</td>
                           <td>
                             {rental.clientName || "Unknown"}
-                            {rental.client ? rental.client.username : "Unknown"}
                           </td>
                           <td>
                             {new Date(rental.startDate).toLocaleDateString()}
