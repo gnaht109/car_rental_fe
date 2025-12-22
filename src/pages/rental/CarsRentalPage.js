@@ -1,12 +1,54 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import rentalService from "../../service/rentalService";
+import carService from "../../service/carService";
 
 function CarsRentalPage() {
   const [rentals, setRentals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState("");
+  const [carDetailsMap, setCarDetailsMap] = useState({});
+
+  // Fetch car details from carId
+  const fetchCarDetails = async (rentalsData) => {
+    const details = { ...carDetailsMap };
+    // Filter out null/undefined carIds
+    const uniqueCarIds = [
+      ...new Set(
+        rentalsData
+          .map((r) => r.carId)
+          .filter((id) => id !== null && id !== undefined)
+      ),
+    ];
+
+    if (uniqueCarIds.length === 0) {
+      console.warn("No valid carIds found in rentals");
+      return;
+    }
+
+    await Promise.all(
+      uniqueCarIds.map(async (id) => {
+        if (!details[id] && id) {
+          try {
+            const res = await carService.getById(id);
+            // Handle different response formats
+            const carData = res.data || res.result || res;
+            if (carData && (carData.imgUrl || carData.id)) {
+              details[id] = carData;
+            } else {
+              console.warn(`Invalid car data for ID ${id}:`, carData);
+              details[id] = {}; // Set empty to avoid refetching
+            }
+          } catch (e) {
+            console.error(`Failed to fetch car details for ID ${id}`, e);
+            details[id] = {}; // Set empty to avoid refetching
+          }
+        }
+      })
+    );
+    setCarDetailsMap(details);
+  };
 
   // Fetch user's rentals
   const fetchMyRentals = async () => {
@@ -15,17 +57,22 @@ function CarsRentalPage() {
       setError("");
       const response = await rentalService.getMyRentals();
       // Handle different response formats
+      let rentalsData = [];
       if (Array.isArray(response)) {
-        setRentals(response);
+        rentalsData = response;
       } else if (response.data && Array.isArray(response.data)) {
-        // Truong hop API tra ve dang { data: [...] }
-        setRentals(response.data);
+        rentalsData = response.data;
       } else if (response.code === 1000 && Array.isArray(response.data)) {
-        // Truong hop API tra ve dang { code: 1000, data: [...] }
-        setRentals(response.data);
+        rentalsData = response.data;
       } else {
         console.error("Unexpected response format:", response);
-        setRentals([]);
+        rentalsData = [];
+      }
+      setRentals(rentalsData);
+
+      // Fetch car details for each rental
+      if (rentalsData.length > 0) {
+        await fetchCarDetails(rentalsData);
       }
     } catch (error) {
       console.error("Error fetching my rentals:", error);
@@ -43,17 +90,14 @@ function CarsRentalPage() {
   // Filter rentals based on search term
   const filteredRentals = Array.isArray(rentals)
     ? rentals.filter((rental) => {
-        const car = rental.car || {};
+        const car = rental.car || carDetailsMap[rental.carId] || {};
         const searchLower = searchTerm.toLowerCase();
         return (
-          // car.brand?.toLowerCase().includes(searchLower) ||
-          // car.model?.toLowerCase().includes(searchLower) ||
-          // car.plate?.toLowerCase().includes(searchLower) ||
-          // rental.id?.toString().includes(searchTerm) ||
-          // rental.status?.toLowerCase().includes(searchLower)
-
           (rental.carModel &&
             rental.carModel.toLowerCase().includes(searchLower)) ||
+          (car.brand && car.brand.toLowerCase().includes(searchLower)) ||
+          (car.model && car.model.toLowerCase().includes(searchLower)) ||
+          (car.plate && car.plate.toLowerCase().includes(searchLower)) ||
           (rental.status &&
             rental.status.toLowerCase().includes(searchLower)) ||
           (rental.rentalId && rental.rentalId.toString().includes(searchTerm))
@@ -199,14 +243,28 @@ function CarsRentalPage() {
               /* Rentals Grid */
               <div className="car-grid">
                 {filteredRentals.map((rental) => {
-                  const car = rental.car || {};
+                  // Get car from rental.car or from carDetailsMap
+                  const car = rental.car || carDetailsMap[rental.carId] || {};
+                  const carName =
+                    (car.brand && car.model
+                      ? `${car.brand} ${car.model}`
+                      : null) ||
+                    rental.carModel ||
+                    "Unknown Car";
+                  const carId = car.id || rental.carId;
+
                   return (
-                    <div key={rental.id} className="car-card">
+                    <div key={rental.id || rental.rentalId} className="car-card">
                       <img
-                        src={car.imgUrl || "/images/placeholder.jpg"}
-                        alt={`${car.brand} ${car.model}`}
+                        src={
+                          car.imgUrl ||
+                          "https://placehold.co/300x200?text=No+Image"
+                        }
+                        alt={carName}
                         onError={(e) => {
-                          e.target.src = "/images/placeholder.jpg";
+                          e.target.onerror = null;
+                          e.target.src =
+                            "https://placehold.co/300x200?text=No+Image";
                         }}
                       />
                       <div className="car-card-content">
@@ -218,9 +276,7 @@ function CarsRentalPage() {
                             marginBottom: "0.5rem",
                           }}
                         >
-                          <h3>
-                            {rental.brand} {rental.model}
-                          </h3>
+                          <h3>{carName}</h3>
                           <span style={getStatusBadge(rental.status)}>
                             {rental.status || "UNKNOWN"}
                           </span>
@@ -239,15 +295,17 @@ function CarsRentalPage() {
                             {formatPrice(rental.totalPrice)}
                           </p>
                         )}
-                        <div style={{ marginTop: "1rem" }}>
-                          <Link
-                            to={`/cars/${car.id}`}
-                            className="btn btn-primary"
-                            style={{ width: "100%" }}
-                          >
-                            View Car Details
-                          </Link>
-                        </div>
+                        {carId && (
+                          <div style={{ marginTop: "1rem" }}>
+                            <Link
+                              to={`/cars/${carId}`}
+                              className="btn btn-primary"
+                              style={{ width: "100%" }}
+                            >
+                              View Car Details
+                            </Link>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );

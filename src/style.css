@@ -1745,6 +1745,152 @@ select option {
   border-color: rgba(220, 53, 69, 0.3);
 }
 
+/* ======================= Payment Page ======================= */
+.payment-page {
+  min-height: calc(100vh - var(--header-height) - 100px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+}
+
+.payment-container {
+  width: min(480px, 100%);
+  background: var(--color-surface);
+  padding: 2.5rem;
+  border-radius: 28px;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-soft);
+}
+
+.payment-title {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.payment-subtitle {
+  text-align: center;
+  color: var(--color-muted);
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+.payment-card-container {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.payment-card-container:focus-within {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(62, 207, 142, 0.25);
+}
+
+/* Stripe CardElement styling */
+.payment-card-container .StripeElement {
+  color: var(--color-text);
+}
+
+.payment-card-container .StripeElement--focus {
+  color: var(--color-text);
+}
+
+.payment-card-container .StripeElement--invalid {
+  color: #dc3545;
+}
+
+/* Override Stripe default styles for dark theme */
+.payment-card-container .StripeElement input,
+.payment-card-container .StripeElement iframe {
+  color: var(--color-text) !important;
+}
+
+.payment-card-container .StripeElement--complete {
+  color: var(--color-accent);
+}
+
+.payment-error {
+  color: #dc3545;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.payment-loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-muted);
+  background: var(--color-surface);
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+}
+
+.payment-button {
+  width: 100%;
+  padding: 1rem 0;
+  margin-top: 0.5rem;
+  background: var(--color-accent);
+  color: #020305;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.payment-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(62, 207, 142, 0.3);
+  background: var(--color-accent-dark);
+}
+
+.payment-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.payment-info {
+  background: rgba(245, 197, 24, 0.1);
+  border: 1px solid rgba(245, 197, 24, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-text);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.payment-info-icon {
+  display: inline-block;
+  margin-right: 0.5rem;
+  color: var(--color-primary);
+}
+
+/* Responsive Payment Page */
+@media (max-width: 576px) {
+  .payment-container {
+    padding: 1.5rem;
+  }
+
+  .payment-title {
+    font-size: 1.5rem;
+  }
+}
+
 /* Responsive Profile Page */
 @media (max-width: 768px) {
   .profile-header {

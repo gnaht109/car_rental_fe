@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import carService from "../../service/carService";
 import rentalService from "../../service/rentalService";
 
@@ -17,6 +18,30 @@ function RentalFillPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Helper function để kiểm tra xem người dùng có phải là chủ xe không
+  const checkIfOwner = (carData) => {
+    const token = localStorage.getItem("token");
+    if (!token || !carData) return false;
+
+    try {
+      const decoded = jwtDecode(token);
+      const currentUserId = decoded.userId || decoded.id || decoded.sub;
+      const carOwnerId = carData.userId || carData.ownerId || carData.owner?.id;
+
+      // So sánh user ID (có thể là số hoặc chuỗi)
+      if (
+        currentUserId &&
+        carOwnerId &&
+        String(currentUserId) === String(carOwnerId)
+      ) {
+        return true;
+      }
+    } catch (error_) {
+      console.error("Error decoding token:", error_);
+    }
+    return false;
+  };
+
   // 1. Lấy thông tin xe để hiển thị
   useEffect(() => {
     const fetchCar = async () => {
@@ -25,6 +50,13 @@ function RentalFillPage() {
         // Xử lý wrapper (result/data)
         const carData = response.result || response.data || response;
         setCar(carData);
+
+        // Kiểm tra xem người dùng có phải là chủ xe không
+        if (checkIfOwner(carData)) {
+          setError(
+            "Bạn không thể đặt xe của chính mình. Vui lòng chọn xe khác."
+          );
+        }
       } catch (err) {
         console.error(err);
         setError("Could not load car details.");
@@ -62,6 +94,13 @@ function RentalFillPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
+
+    // Kiểm tra xem người dùng có phải là chủ xe không
+    if (checkIfOwner(car)) {
+      setError("Bạn không thể đặt xe của chính mình. Vui lòng chọn xe khác.");
+      setLoading(false);
+      return;
+    }
 
     // Validate cơ bản
     if (new Date(formData.endDate) <= new Date(formData.startDate)) {
@@ -157,7 +196,11 @@ function RentalFillPage() {
               <button
                 type="submit"
                 className="btn btn-accent btn-block w-100 py-2" // Class này từ file CSS của bạn
-                disabled={loading || totalPrice <= 0}
+                disabled={
+                  loading ||
+                  totalPrice <= 0 ||
+                  (error && error.includes("không thể đặt xe"))
+                }
                 style={{ backgroundColor: "#0d6efd", color: "white" }} // Style inline dự phòng
               >
                 {loading ? "Processing..." : "Confirm Booking"}

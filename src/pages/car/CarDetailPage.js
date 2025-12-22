@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import carService from "../../service/carService";
 
 function CarDetailPage() {
   const { id } = useParams(); // Get the 'id' from the URL (e.g., /cars/1)
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
     const fetchCar = async () => {
@@ -13,6 +15,28 @@ function CarDetailPage() {
         const response = await carService.getById(id);
         const carData = response.result || response.data;
         setCar(carData); //Lưu dữ liệu vào state
+
+        // Kiểm tra xem người dùng có phải là chủ xe không
+        const token = localStorage.getItem("token");
+        if (token && carData) {
+          try {
+            const decoded = jwtDecode(token);
+            const currentUserId = decoded.userId || decoded.id || decoded.sub;
+            const carOwnerId =
+              carData.userId || carData.ownerId || carData.owner?.id;
+
+            // So sánh user ID (có thể là số hoặc chuỗi)
+            if (
+              currentUserId &&
+              carOwnerId &&
+              String(currentUserId) === String(carOwnerId)
+            ) {
+              setIsOwner(true);
+            }
+          } catch (decodeErr) {
+            console.error("Error decoding token:", decodeErr);
+          }
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -111,17 +135,25 @@ function CarDetailPage() {
               <div className="price-display">
                 <span>From</span>
                 {/* API trả về pricePerDay */}
-                <span className="price-amount">${car.pricePerDay}</span>
+                <span className="price-amount">{car.pricePerDay} VND</span>
                 <span>/ day</span>
               </div>
-              <Link
-                to={`/checkout/${car.id}`}
-                className="btn btn-accent btn-block"
-              >
-                Book Now
-              </Link>
-
-              {/* Tạm thời ẩn button Book Now */}
+              {isOwner ? (
+                <div
+                  className="alert alert-warning"
+                  style={{ marginTop: "1rem" }}
+                >
+                  <strong>Đây là xe của bạn.</strong> Bạn không thể đặt xe của
+                  chính mình.
+                </div>
+              ) : (
+                <Link
+                  to={`/checkout/${car.id}`}
+                  className="btn btn-accent btn-block"
+                >
+                  Book Now
+                </Link>
+              )}
             </div>
           </aside>
         </div>

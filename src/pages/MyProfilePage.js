@@ -50,8 +50,19 @@ function MyProfilePage() {
       if (myRentals.length === 0) return;
 
       const details = { ...carDetailsMap };
-      // Lọc ra các ID xe chưa có thông tin để tránh gọi trùng
-      const uniqueCarIds = [...new Set(myRentals.map((r) => r.carId))];
+      // FIX: Filter out null/undefined carIds
+      const uniqueCarIds = [
+        ...new Set(
+          myRentals
+            .map((r) => r.carId)
+            .filter((id) => id !== null && id !== undefined)
+        ),
+      ];
+
+      if (uniqueCarIds.length === 0) {
+        console.warn("No valid carIds found in rentals");
+        return;
+      }
 
       await Promise.all(
         uniqueCarIds.map(async (id) => {
@@ -59,10 +70,17 @@ function MyProfilePage() {
             // Chỉ fetch nếu chưa có trong Map
             try {
               const res = await carService.getById(id);
-              // Backend trả về res.data hoặc res.result tùy API car của bạn
-              details[id] = res.data || res.result || res;
+              // FIX: Handle different response formats
+              const carData = res.data || res.result || res;
+              if (carData && (carData.imgUrl || carData.id)) {
+                details[id] = carData;
+              } else {
+                console.warn(`Invalid car data for ID ${id}:`, carData);
+                details[id] = {}; // Set empty to avoid refetching
+              }
             } catch (e) {
               console.error(`Failed to fetch car image for ID ${id}`, e);
+              details[id] = {}; // Set empty to avoid refetching
             }
           }
         })
@@ -414,8 +432,12 @@ function MyProfilePage() {
                     // Logic ảnh: Ưu tiên ảnh fetch được -> ảnh placeholder
                     const displayImg =
                       carDetails.imgUrl ||
-                      "https://placehold.co/150x100?text=Loading";
-                    const displayPlate = carDetails.plate || "Loading...";
+                      "https://placehold.co/150x100?text=No+Image";
+                    const displayPlate = carDetails.plate || "N/A";
+                    const carName =
+                      (carDetails.brand && carDetails.model
+                        ? `${carDetails.brand} ${carDetails.model}`
+                        : null) || rental.carModel || "Unknown Car";
 
                     return (
                       <tr key={rental.rentalId}>
@@ -444,9 +466,7 @@ function MyProfilePage() {
                               }}
                             />
                             <div>
-                              <div className="rental-car-details">
-                                {rental.carModel || "Unknown Car"}
-                              </div>
+                              <div className="rental-car-details">{carName}</div>
                               <div className="rental-car-plate">
                                 Plate: {displayPlate}
                               </div>
