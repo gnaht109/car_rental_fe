@@ -1,5 +1,13 @@
 # Getting Started with Create React App
 
+README
+
+CANVA SLIDE LINK: https://www.canva.com/design/DAG8KjNBzGA/-UrT1PVypqsJmAYlPL9XBg/edit
+
+---
+
+REPORT LINK: https://docs.google.com/document/d/1D6GFXvU0m1mrqhhYW_oTvkXLSdowMsyM/edit#heading=h.h01s74k9fw6o
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
