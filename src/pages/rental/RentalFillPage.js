@@ -189,7 +189,7 @@ function RentalFillPage() {
               <div className="d-flex justify-content-between mb-3">
                 <span>Total Estimated Price:</span>
                 <span className="h4 text-danger fw-bold">
-                  ${totalPrice.toLocaleString()}
+                  {totalPrice.toLocaleString()} VND
                 </span>
               </div>
 

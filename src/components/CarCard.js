@@ -14,7 +14,7 @@ function CarCard({ car }) {
       <img src={car.imgUrl} alt={car.brand + " " + car.model} />
       <div className="car-card-content">
         <h3>{car.brand + " " + car.model}</h3>
-        <p className="price">From ${formatter.format(car.pricePerDay)} / day</p>
+        <p className="price">From {formatter.format(car.pricePerDay)} VND   / day</p>
         {/* The link now points to the dynamic route for the specific car's ID */}
         <Link to={`/cars/${car.id}`} className="btn btn-primary">
           View Details
