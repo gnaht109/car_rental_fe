@@ -6,7 +6,7 @@ CANVA SLIDE LINK: https://www.canva.com/design/DAG8KjNBzGA/-UrT1PVypqsJmAYlPL9XB
 
 ---
 
-REPORT LINK: https://docs.google.com/document/d/1D6GFXvU0m1mrqhhYW_oTvkXLSdowMsyM/edit#heading=h.h01s74k9fw6o
+REPORT LINK: https://docs.google.com/document/d/1sK52wzKhHGgYjlCgPkaq4jhvelzFYb4kCQISdrMzMfg/edit?hl=vi&tab=t.0
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -76,3 +76,4 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
